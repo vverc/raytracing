@@ -11,9 +11,11 @@ SOURCES := $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOURCES))
 EXECUTABLE = $(BINDIR)/raytrace.out
 
-.PHONY: all clean
+.PHONY: all clean compile done
 
-all: $(EXECUTABLE)
+all: compile done
+
+compile: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
@@ -22,6 +24,10 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+done: $(EXECUTABLE)
+	rm -f test.ppm
+	./bin/raytrace.out >> test.ppm
+
 clean:
-	rm -f $(EXECUTABLE) $(OBJECTS)
-	rm -rf $(BINDIR) $(OBJDIR)
+
+	rm -rf $(BINDIR)/* $(OBJDIR)/*
