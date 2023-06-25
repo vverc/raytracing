@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=c++11 -Wall -Wextra -Iinclude
+CFLAGS = -std=c++11 -Wall -Wextra -Iinclude -g
 LDFLAGS =
 
 SRCDIR = src
@@ -11,9 +11,9 @@ SOURCES := $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SOURCES))
 EXECUTABLE = $(BINDIR)/raytrace.out
 
-.PHONY: all clean compile done
+.PHONY: all clean compile execute
 
-all: compile done
+all: clean compile 
 
 compile: $(EXECUTABLE)
 
@@ -24,7 +24,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-done: $(EXECUTABLE)
+execute:
 	rm -f test.ppm
 	./bin/raytrace.out >> test.ppm
 
