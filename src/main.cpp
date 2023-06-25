@@ -14,15 +14,18 @@ colour ray_colour(const ray& r, const hittable& world, int depth) {
         return colour(0, 0, 0);
     }
 
+    // ray intersects with hittable
     if (world.hit(r, 0.001, infinity, rec)) {
         ray scattered;
         colour attenuation;
         if (rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
             return attenuation * ray_colour(scattered, world, depth - 1);
         }
+
         return colour(0, 0, 0);
     }
 
+    // "sky"
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - t) * colour(1.0, 1.0, 1.0) + t * colour(0.5, 0.7, 1.0);
@@ -31,7 +34,7 @@ colour ray_colour(const ray& r, const hittable& world, int depth) {
 int main() {
     // image
     const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 640;
+    const int image_width = 240;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int samples_per_pixel = 100;
     const int max_depth = 50;
@@ -40,8 +43,8 @@ int main() {
     hittable_list world;
 
     auto material_ground = make_shared<lambertian>(colour(0.8, 0.8, 0.0));
-    auto material_center = make_shared<lambertian>(colour(0.7, 0.3, 0.3));
-    auto material_left = make_shared<metal>(colour(0.8, 0.8, 0.8), 0.3);
+    auto material_center = make_shared<dielectric>(1.5);
+    auto material_left = make_shared<dielectric>(1.5);
     auto material_right = make_shared<metal>(colour(0.8, 0.6, 0.2), 1.0);
 
     world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
