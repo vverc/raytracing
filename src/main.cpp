@@ -6,6 +6,7 @@
 #include "material.h"
 #include "rtweekend.h"
 #include "sphere.h"
+#include "triangle.h"
 
 colour ray_colour(const ray& r, const hittable& world, int depth) {
     hit_record rec;
@@ -44,18 +45,23 @@ int main() {
     hittable_list world;
 
     auto material_ground = make_shared<lambertian>(colour(0.8, 0.8, 0.0));
-    auto material_center = make_shared<lambertian>(colour(0.1, 0.2, 0.5));
-    auto material_left = make_shared<dielectric>(1.5);
-    auto material_right = make_shared<metal>(colour(0.8, 0.6, 0.2), 0.0);
+    auto material_left = make_shared<metal>(colour(0.8, 0.8, 0.8), 1.0);
+    auto material_right = make_shared<metal>(colour(0.8, 0.8, 0.8), 1.0);
 
     world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
-    world.add(make_shared<sphere>(point3(0.0, 0.0, -1.0), 0.5, material_center));
-    world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
-    world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), -0.45, material_left));
-    world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
+    world.add(make_shared<triangle>(point3(0.0, 0.25, -1.0), point3(-0.1, -1.0, -1.0),
+                                    point3(-0.8, -0.8, -1.5), material_left));
+    world.add(make_shared<triangle>(point3(0.0, 0.25, -1.0), point3(1.0, -1.0, -1.5),
+                                    point3(-0.1, -1.0, -1.0), material_right));
 
     // cam
-    camera cam(point3(-2, 2, 1), point3(0, 0, -1), vec3(0, 1, 0), 20, aspect_ratio);
+    point3 lookfrom(0, 0, 2);
+    point3 lookat(0, 0, -1);
+    vec3 vup(0, 1, 0);
+    auto dist_to_focus = (lookfrom - lookat).length();
+    auto aperture = 0.2;
+
+    camera cam(lookfrom, lookat, vup, 40, aspect_ratio, aperture, dist_to_focus, false);
 
     // Render
 
