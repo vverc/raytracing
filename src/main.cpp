@@ -49,19 +49,22 @@ int main() {
     auto material_right = make_shared<metal>(colour(0.8, 0.8, 0.8), 1.0);
 
     world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
-    world.add(make_shared<triangle>(point3(0.0, 0.25, -1.0), point3(-0.1, -1.0, -1.0),
-                                    point3(-0.8, -0.8, -1.5), material_left));
+
+    world.add(make_shared<triangle>(point3(-0.8, -0.8, -1.5), point3(0.0, 0.25, -1.0),
+                                    point3(-0.1, -1.0, -1.0), material_left));
     world.add(make_shared<triangle>(point3(0.0, 0.25, -1.0), point3(1.0, -1.0, -1.5),
                                     point3(-0.1, -1.0, -1.0), material_right));
 
+    world.add(make_shared<sphere>(point3(0, 0.5, -0.5), 0.1, material_left));
+
     // cam
-    point3 lookfrom(0, 0, 2);
+    point3 lookfrom(0, 1, 2);
     point3 lookat(0, 0, -1);
     vec3 vup(0, 1, 0);
     auto dist_to_focus = (lookfrom - lookat).length();
     auto aperture = 0.2;
 
-    camera cam(lookfrom, lookat, vup, 40, aspect_ratio, aperture, dist_to_focus, false);
+    camera cam(lookfrom, lookat, vup, 30, aspect_ratio, aperture, dist_to_focus, false);
 
     // Render
 
